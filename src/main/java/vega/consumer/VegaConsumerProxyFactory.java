@@ -6,7 +6,7 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 import vega.component.RpcMethodInvokerComponent;
 import vega.component.ZkComponent;
-import vega.event.EventCenter;
+import vega.message.MessageCenter;
 import vega.manager.SubscribeManager;
 import vega.proxy.cglib.RpcInterceptor;
 import vega.register.ZkRegister;
@@ -21,7 +21,7 @@ public class VegaConsumerProxyFactory {
     private static volatile VegaConsumerProxyFactory singleton;
 
     private ZkRegister zkRegister;
-    private EventCenter eventCenter;
+    private MessageCenter messageCenter;
     private ZkComponent zkComponent;
 
     private SubscribeManager subscribeManager;
@@ -45,10 +45,10 @@ public class VegaConsumerProxyFactory {
 
     private VegaConsumerProxyFactory() {
         try {
-            eventCenter = new EventCenter();
+            messageCenter = new MessageCenter();
             zkComponent = new ZkComponent();
 
-            zkRegister = new ZkRegister(zkComponent, eventCenter);
+            zkRegister = new ZkRegister(zkComponent, messageCenter);
             zkRegister.init();
 
             subscribeManager.init();

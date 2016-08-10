@@ -28,17 +28,17 @@ public class ZkComponent implements Component{
         zkClient.close();
     }
 
-    public void watch(String path, CallBack callBack) {
-        try {
-            if (zkClient.checkExists().forPath(path) == null) {
-                // 节点不存在
-                zkClient.create().creatingParentsIfNeeded().forPath(path);
-            }
-            zkClient.getChildren().usingWatcher((Watcher) event -> callBack.doCallBack(event)).inBackground().forPath(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public void watch(String path, CallBack callBack) {
+//        try {
+//            if (zkClient.checkExists().forPath(path) == null) {
+//                // 节点不存在
+//                zkClient.create().creatingParentsIfNeeded().forPath(path);
+//            }
+//            zkClient.getChildren().usingWatcher((Watcher) message -> callBack.doCallBack(message)).inBackground().forPath(path);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void watchChild(String path, CallBack callBack) {
         PathChildrenCache pathChildrenCache = new PathChildrenCache(zkClient, path, true);

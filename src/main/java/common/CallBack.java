@@ -5,7 +5,5 @@ package common;
  */
 public interface CallBack<T, U> {
 
-    void doCallBack(T t);
-
     void doCallBack(T t, U u);
 }

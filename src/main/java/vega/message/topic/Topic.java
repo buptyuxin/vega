@@ -1,4 +1,4 @@
-package vega.event.topic;
+package vega.message.topic;
 
 /**
  * Created by yanmo.yx on 2016/8/9.

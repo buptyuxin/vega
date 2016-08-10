@@ -1,28 +1,28 @@
 package vega.register;
 
 import common.CallBack;
-import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
-import org.apache.zookeeper.Watcher.Event;
 import vega.component.ZkComponent;
-import vega.event.EventCenter;
-import vega.event.EventHandler;
-import vega.event.topic.ConsumerTopic;
-import vega.event.topic.Topic;
+import vega.message.MessageCenter;
+import vega.message.MessageHandler;
+import vega.message.topic.ConsumerTopic;
+import vega.message.topic.Topic;
 import vega.register.registerType.ConsumerRegisterMsg;
 import vega.register.registerType.RegisterMsg;
 
 /**
+ * 这个是服务的注册中心，用来注册服务的提供者和消费者，ZK实现
+ *
  * Created by yanmo.yx on 2016/8/3.
  */
-public class ZkRegister implements Register, EventHandler {
+public class ZkRegister implements Register, MessageHandler {
 
     private ZkComponent zkComponent;
-    private EventCenter eventCenter;
+    private MessageCenter messageCenter;
 
-    public ZkRegister(ZkComponent zkComponent, EventCenter eventCenter) {
+    public ZkRegister(ZkComponent zkComponent, MessageCenter messageCenter) {
         this.zkComponent = zkComponent;
-        this.eventCenter = eventCenter;
+        this.messageCenter = messageCenter;
     }
 
     @Override
@@ -44,10 +44,6 @@ public class ZkRegister implements Register, EventHandler {
             String version = content.getVersion();
 
             zkComponent.watchChild(RegisterUtil.getMethodPath(method, version), new CallBack<PathChildrenCacheEvent.Type, PathChildrenCacheEvent>() {
-                @Override
-                public void doCallBack(PathChildrenCacheEvent.Type type) {
-                    return;
-                }
 
                 @Override
                 public void doCallBack(PathChildrenCacheEvent.Type type, PathChildrenCacheEvent pathChildrenCacheEvent) {
@@ -57,7 +53,7 @@ public class ZkRegister implements Register, EventHandler {
                         return;
                     } else if (type.equals(PathChildrenCacheEvent.Type.CHILD_ADDED)) {
                         // 新增加了服务提供者
-
+                        messageCenter.fire();
                     } else if (type.equals(PathChildrenCacheEvent.Type.CHILD_REMOVED)) {
                         // 删除了服务提供者
 
@@ -68,7 +64,7 @@ public class ZkRegister implements Register, EventHandler {
             });
 
             ConsumerTopic consumerTopic = new ConsumerTopic(method + "/" + version);
-            eventCenter.register(consumerTopic, this);
+            messageCenter.register(consumerTopic, this);
         }
     }
 
