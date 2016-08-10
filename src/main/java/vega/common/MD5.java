@@ -1,4 +1,4 @@
-package common;
+package vega.common;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

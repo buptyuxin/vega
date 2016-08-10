@@ -1,13 +1,11 @@
 package vega.component;
 
-import common.CallBack;
+import vega.common.CallBack;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.zookeeper.Watcher;
 import vega.config.ConfigUtil;
 
 /**

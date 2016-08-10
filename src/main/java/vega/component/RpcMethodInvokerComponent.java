@@ -1,8 +1,7 @@
 package vega.component;
 
-import common.MD5;
+import vega.common.MD5;
 import org.apache.commons.lang3.StringUtils;
-import vega.config.ConfigUtil;
 import vega.net.RpcRequest;
 
 import java.io.Serializable;
@@ -17,14 +16,12 @@ public class RpcMethodInvokerComponent implements Component{
 
     private static final String SUB_DELIMITER = "+";
 
-    private String group;
     private String version;
     private long timeout = 3000L; // 默认3s
 
     private Map<Method, String> methodMD5Maps = new HashMap<>();
 
-    public RpcMethodInvokerComponent(String group, String version, long timeout) {
-        this.group = group;
+    public RpcMethodInvokerComponent(String version, long timeout) {
         this.version = version;
         this.timeout = timeout;
     }
@@ -32,8 +29,6 @@ public class RpcMethodInvokerComponent implements Component{
     public Object invoke(Method method, Object[] objects) {
 
         RpcRequest rpcRequest = new RpcRequest();
-        rpcRequest.setAppName(ConfigUtil.getAppName());
-        rpcRequest.setGroup(group);
         rpcRequest.setVersion(version);
         rpcRequest.setTimeout(timeout);
         rpcRequest.setArgs(convert2Serializable(objects));

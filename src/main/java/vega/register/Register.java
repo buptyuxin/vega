@@ -15,5 +15,5 @@ public interface Register {
     public void register(RegisterMsg registerMsg);
 
     // 取消注册消息
-    public void cancel();
+    public void cancel(RegisterMsg registerMsg);
 }

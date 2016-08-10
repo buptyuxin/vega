@@ -16,7 +16,6 @@ import java.util.Properties;
  */
 public class ConfigUtil {
 
-    private static final String APPNAME = "appName";
     private static final String SERIALIZATION = "serialization";
     private static final String ZOOKEEPER_SERVERS = "zk.servers";
 
@@ -26,7 +25,6 @@ public class ConfigUtil {
     /**
      * 配置的值
      */
-    private static String appName;
     private static String serialization;
     private static String zkServers;
     private static InetSocketAddress inetSocketAddress;
@@ -36,7 +34,6 @@ public class ConfigUtil {
         InputStream is = ConfigUtil.class.getClassLoader().getResourceAsStream(CONFIG_PATH);
         try {
             properties.load(is);
-            appName = properties.getProperty(APPNAME);
             serialization = properties.getProperty(SERIALIZATION);
             if (StringUtils.isBlank(serialization)) {
                 serialization = "hessian";
@@ -74,10 +71,6 @@ public class ConfigUtil {
 
         }
         return netip == null ? localip : netip;
-    }
-
-    public static String getAppName() {
-        return appName;
     }
 
     public static String getSerialization() {

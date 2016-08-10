@@ -9,9 +9,7 @@ public class RpcRequest implements Serializable {
 
     private static final long serialVersionUID = -4677033288339109317L;
 
-    private String group;
     private String version;
-    private String appName;
     private String methodMD5; // methodName + args MD5
     private Serializable[] args;
     private long timeout;
@@ -40,27 +38,11 @@ public class RpcRequest implements Serializable {
         this.methodMD5 = methodMD5;
     }
 
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
     public String getVersion() {
         return version;
     }
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
     }
 }

@@ -5,11 +5,7 @@ import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 import vega.component.RpcMethodInvokerComponent;
-import vega.component.ZkComponent;
-import vega.message.MessageCenter;
-import vega.manager.SubscribeManager;
 import vega.proxy.cglib.RpcInterceptor;
-import vega.register.ZkRegister;
 
 import java.lang.reflect.Method;
 
@@ -20,11 +16,7 @@ public class VegaConsumerProxyFactory {
 
     private static volatile VegaConsumerProxyFactory singleton;
 
-    private ZkRegister zkRegister;
-    private MessageCenter messageCenter;
-    private ZkComponent zkComponent;
-
-    private SubscribeManager subscribeManager;
+    private ConsumerService consumerService;
 
     /**
      * 单例
@@ -45,13 +37,8 @@ public class VegaConsumerProxyFactory {
 
     private VegaConsumerProxyFactory() {
         try {
-            messageCenter = new MessageCenter();
-            zkComponent = new ZkComponent();
-
-            zkRegister = new ZkRegister(zkComponent, messageCenter);
-            zkRegister.init();
-
-            subscribeManager.init();
+            consumerService = new ConsumerService();
+            consumerService.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,7 +55,7 @@ public class VegaConsumerProxyFactory {
      */
     public Object proxy(Class clazz, String version, long timeout) {
 
-        RpcMethodInvokerComponent rpcMethodInvokerComponent = new RpcMethodInvokerComponent(group, version, timeout);
+        RpcMethodInvokerComponent rpcMethodInvokerComponent = new RpcMethodInvokerComponent(version, timeout);
 
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);

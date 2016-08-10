@@ -1,37 +1,35 @@
 package vega.register.registerType;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
+ * 消费服务注册的消息，内容格式为 interfaceName:version
+ *
  * Created by yanmo.yx on 2016/8/9.
  */
-public class ConsumerRegisterMsg extends RegisterMsg<ConsumerRegisterMsg.ConsumerMsgContent> {
+public class ConsumerRegisterMsg extends RegisterMsg<String> {
 
-    private ConsumerRegisterMsg(ConsumerRegisterMsg.ConsumerMsgContent content) {
+    private ConsumerRegisterMsg(String content) {
         super(content);
     }
 
-    public class ConsumerMsgContent {
-        private String method;
-        private String version;
-
-        public ConsumerMsgContent(String method, String version) {
-            this.method = method;
-            this.version = version;
+    public String getInterface() {
+        if (StringUtils.isNotBlank(getContent())) {
+            String[] strs = getContent().split(":");
+            if (strs.length == 2) {
+                return strs[0];
+            }
         }
+        return null;
+    }
 
-        public String getMethod() {
-            return method;
+    public String getVersion() {
+        if (StringUtils.isNotBlank(getContent())) {
+            String[] strs = getContent().split(":");
+            if (strs.length == 2) {
+                return strs[1];
+            }
         }
-
-        public void setMethod(String method) {
-            this.method = method;
-        }
-
-        public String getVersion() {
-            return version;
-        }
-
-        public void setVersion(String version) {
-            this.version = version;
-        }
+        return null;
     }
 }
