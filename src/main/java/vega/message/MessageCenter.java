@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.StampedLock;
 
 /**
+ * 内部事件总线
+ *
  * Created by yanmo.yx on 2016/8/9.
  */
 public class MessageCenter {

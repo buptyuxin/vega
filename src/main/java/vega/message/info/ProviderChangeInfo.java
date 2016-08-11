@@ -49,4 +49,12 @@ public class ProviderChangeInfo {
     public void setPort(String port) {
         this.port = port;
     }
+
+    public boolean isDel() {
+        return type == null ? false : type == 1;
+    }
+
+    public boolean isAdd() {
+        return type == null ? false : type == 2;
+    }
 }

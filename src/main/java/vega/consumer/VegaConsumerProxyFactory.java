@@ -62,12 +62,7 @@ public class VegaConsumerProxyFactory {
         enhancer.setCallbacks(new Callback[] {
                 new RpcInterceptor(rpcMethodInvokerComponent), NoOp.INSTANCE
         });
-        enhancer.setCallbackFilter(new CallbackFilter() {
-            @Override
-            public int accept(Method method) {
-                return 0;
-            }
-        });
+        enhancer.setCallbackFilter(method -> 0);
         return enhancer.create();
     }
 }

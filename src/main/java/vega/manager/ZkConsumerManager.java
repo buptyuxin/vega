@@ -1,4 +1,4 @@
-package vega.register;
+package vega.manager;
 
 import vega.common.CallBack;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
@@ -7,6 +7,8 @@ import vega.consumer.ConsumerService;
 import vega.message.MessageCenter;
 import vega.message.info.ProviderChangeInfo;
 import vega.message.topic.ConsumerTopic;
+import vega.register.Register;
+import vega.register.ZkRegisterUtil;
 import vega.register.registerType.ConsumerRegisterMsg;
 import vega.register.registerType.RegisterMsg;
 
@@ -15,13 +17,13 @@ import vega.register.registerType.RegisterMsg;
  *
  * Created by yanmo.yx on 2016/8/3.
  */
-public class ZkConsumerRegister implements Register {
+public class ZkConsumerManager implements Register {
 
     private ZkComponent zkComponent;
     private MessageCenter messageCenter;
     private ConsumerService consumerService;
 
-    public ZkConsumerRegister(ZkComponent zkComponent, MessageCenter messageCenter, ConsumerService consumerService) {
+    public ZkConsumerManager(ZkComponent zkComponent, MessageCenter messageCenter, ConsumerService consumerService) {
         this.zkComponent = zkComponent;
         this.messageCenter = messageCenter;
         this.consumerService = consumerService;
