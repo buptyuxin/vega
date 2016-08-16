@@ -1,11 +1,10 @@
 package vega.manager;
 
-import vega.common.CallBack;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import vega.common.CallBack;
 import vega.component.ZkComponent;
 import vega.consumer.ConsumerService;
 import vega.message.MessageCenter;
-import vega.message.info.ProviderChangeInfo;
 import vega.message.topic.ConsumerTopic;
 import vega.register.Register;
 import vega.register.ZkRegisterUtil;
@@ -56,7 +55,7 @@ public class ZkConsumerManager implements Register {
                     if (type.equals(PathChildrenCacheEvent.Type.CHILD_UPDATED)) {
                         return;
                     } else {
-                        ProviderChangeInfo providerChangeInfo = new ProviderChangeInfo();
+                        ConsumerTopic.ProviderChangeInfo providerChangeInfo = new ConsumerTopic.ProviderChangeInfo();
                         providerChangeInfo.setInterfaceName(ZkRegisterUtil.getProviderInterface(path));
                         providerChangeInfo.setVersion(ZkRegisterUtil.getProviderVersion(path));
                         providerChangeInfo.setProviderIp(ZkRegisterUtil.getProviderIp(content));
