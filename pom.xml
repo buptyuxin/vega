@@ -105,6 +105,21 @@
             <version>1.8</version>
         </dependency>
 
+        <!-- kryo is a new serialization tool -->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+
+        <!-- If you experience issues because you already have a different version of asm in your classpath
+        , you can use the kryo-shaded jar which has its version of asm included, relocated in a different package: -->
+        <!--<dependency>-->
+            <!--<groupId>com.esotericsoftware</groupId>-->
+            <!--<artifactId>kryo-shaded</artifactId>-->
+            <!--<version>4.0.0</version>-->
+        <!--</dependency>-->
+
     </dependencies>
 
     <build>
