@@ -2,15 +2,17 @@ package vega.component;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vega.net.RpcRequest;
+import vega.serialization.kryo.KryoPool;
 
-import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,11 +26,34 @@ public class ClientChannelComponent implements Component {
     /**
      * serverip:port -> bootstrap
      */
-    private Map<String, Bootstrap> channelMap = new ConcurrentHashMap<>();
+    private Map<String, Channel> channelMap = new ConcurrentHashMap<>();
+
+    private Bootstrap bootstrap;
+
+    private KryoPool kryoPool;
 
     @Override
     public void init() {
+        kryoPool = new KryoPool();
+        kryoPool.init();
 
+        EventLoopGroup group = new NioEventLoopGroup();
+        bootstrap = new Bootstrap();
+        bootstrap.group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            protected void initChannel(SocketChannel socketChannel) throws Exception {
+                socketChannel.pipeline().addLast(new KryoDecoder(kryoPool)).addLast(new MessageToByteEncoder<RpcRequest>() {
+                    @Override
+                    protected void encode(ChannelHandlerContext ctx, RpcRequest msg, ByteBuf out) throws Exception {
+                        int startIdx = out.writerIndex();
+                        msg.getMsgId();
+                        kryoPool.encode(out, msg);
+                        int endIdx = out.writerIndex();
+                        out.setInt(startIdx, endIdx - startIdx - 4);
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -37,28 +62,33 @@ public class ClientChannelComponent implements Component {
     }
 
     public void addChannel(String serverIp, int port) {
-        EventLoopGroup group = new NioEventLoopGroup();
-        Bootstrap bs = new Bootstrap();
-        bs.group(group).channel(NioSocketChannel.class).remoteAddress(new InetSocketAddress(serverIp, port))
-                .handler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
-                            @Override
-                            protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
-                                String msg = ByteBufUtil.hexDump(byteBuf.readBytes(byteBuf.readableBytes()));
-                            }
-                        });
-                    }
-                });
-        try {
-            ChannelFuture f = bs.connect().sync();
-        } catch (InterruptedException e) {
+        ChannelFuture f = bootstrap.connect(serverIp, port).awaitUninterruptibly();
+        channelMap.put(serverIp + ":" + port, f.channel());
+    }
+
+    class KryoDecoder extends LengthFieldBasedFrameDecoder {
+
+        private final KryoPool kryoPool;
+
+        public KryoDecoder(KryoPool kryoPool) {
+            super(10485760, 0, 4, 0, 4);
+            this.kryoPool = kryoPool;
+        }
+
+        @Override
+        protected Object decode(final ChannelHandlerContext ctx, final ByteBuf in) throws Exception {
+            ByteBuf frame = (ByteBuf) super.decode(ctx, in);
+            if (frame == null) {
+                return null;
+            }
             try {
-                group.shutdownGracefully().sync();
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+                return kryoPool.decode(frame);
+            } finally {
+                if (null != frame) {
+                    frame.release();
+                }
             }
         }
+
     }
 }

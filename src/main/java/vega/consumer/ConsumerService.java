@@ -1,10 +1,12 @@
 package vega.consumer;
 
 import vega.component.ZkComponent;
+import vega.manager.ChannelManager;
 import vega.manager.ZkConsumerManager;
 import vega.message.MessageCenter;
 import vega.message.MessageHandler;
 import vega.message.topic.ConsumerTopic;
+import vega.message.topic.ProviderChangeTopic;
 import vega.message.topic.Topic;
 
 /**
@@ -23,26 +25,36 @@ public class ConsumerService implements MessageHandler {
 
         zkConsumerManager = new ZkConsumerManager(zkComponent, messageCenter, this);
         zkConsumerManager.init();
+
+        ChannelManager channelManager = new ChannelManager();
     }
 
     @Override
     public void handle(Topic<?> topic) {
-        if (topic instanceof ConsumerTopic) {
-            ConsumerTopic consumerTopic = (ConsumerTopic) topic;
-            ConsumerTopic.ProviderChangeInfo providerChangeInfo = consumerTopic.getContent();
-            if (providerChangeInfo.isAdd()) {
-                handleProvideAdd(providerChangeInfo);
-            } else if (providerChangeInfo.isDel()) {
-                handleProvideDel(providerChangeInfo);
+        if (acceptTopic(topic)) {
+            if (topic instanceof ProviderChangeTopic) {
+                ProviderChangeTopic providerChangeTopic = (ProviderChangeTopic) topic;
+                ProviderChangeTopic.ProviderChangeInfo providerChangeInfo = providerChangeTopic.getContent();
+                if (providerChangeInfo.isAdd()) {
+                    handleProvideAdd(providerChangeInfo);
+                } else if (providerChangeInfo.isDel()) {
+                    handleProvideDel(providerChangeInfo);
+                }
+//            } else if () {
+
             }
         }
     }
 
-    public void handleProvideAdd(ConsumerTopic.ProviderChangeInfo providerChangeInfo) {
+    private void handleProvideAdd(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {
 
     }
 
-    public void handleProvideDel(ConsumerTopic.ProviderChangeInfo providerChangeInfo) {
+    private void handleProvideDel(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {
 
+    }
+
+    private boolean acceptTopic(Topic topic) {
+        return ConsumerTopic.class.isAssignableFrom(topic.getClass());
     }
 }
