@@ -6,6 +6,8 @@ import vega.component.ZkComponent;
 import vega.consumer.ConsumerService;
 import vega.message.MessageCenter;
 import vega.message.topic.ConsumerTopic;
+import vega.message.topic.ProviderChangeTopic;
+import vega.message.topic.Topic;
 import vega.register.Register;
 import vega.register.ZkRegisterUtil;
 import vega.register.registerType.ConsumerRegisterMsg;
@@ -55,7 +57,7 @@ public class ZkConsumerManager implements Register {
                     if (type.equals(PathChildrenCacheEvent.Type.CHILD_UPDATED)) {
                         return;
                     } else {
-                        ConsumerTopic.ProviderChangeInfo providerChangeInfo = new ConsumerTopic.ProviderChangeInfo();
+                        ProviderChangeTopic.ProviderChangeInfo providerChangeInfo = new ProviderChangeTopic.ProviderChangeInfo();
                         providerChangeInfo.setInterfaceName(ZkRegisterUtil.getProviderInterface(path));
                         providerChangeInfo.setVersion(ZkRegisterUtil.getProviderVersion(path));
                         providerChangeInfo.setProviderIp(ZkRegisterUtil.getProviderIp(content));
@@ -70,13 +72,13 @@ public class ZkConsumerManager implements Register {
                         } else {
                             return;
                         }
-                        messageCenter.fire(new ConsumerTopic(providerChangeInfo));
+                        messageCenter.fire(new ProviderChangeTopic(providerChangeInfo));
                     }
                 }
             });
 
-            ConsumerTopic consumerTopic = new ConsumerTopic(null);
-            messageCenter.register(consumerTopic, consumerService);
+            Topic topic = new ProviderChangeTopic(null);
+            messageCenter.register(topic, consumerService);
         }
     }
 

@@ -17,6 +17,7 @@ public class ConsumerService implements MessageHandler {
     private MessageCenter messageCenter;
 
     private ZkConsumerManager zkConsumerManager;
+    private ChannelManager channelManager;
 
     public void init() {
         ZkComponent zkComponent = new ZkComponent();
@@ -26,28 +27,33 @@ public class ConsumerService implements MessageHandler {
         zkConsumerManager = new ZkConsumerManager(zkComponent, messageCenter, this);
         zkConsumerManager.init();
 
-        ChannelManager channelManager = new ChannelManager();
+        channelManager = new ChannelManager();
     }
 
     @Override
     public void handle(Topic<?> topic) {
-        if (acceptTopic(topic)) {
-            if (topic instanceof ProviderChangeTopic) {
-                ProviderChangeTopic providerChangeTopic = (ProviderChangeTopic) topic;
-                ProviderChangeTopic.ProviderChangeInfo providerChangeInfo = providerChangeTopic.getContent();
-                if (providerChangeInfo.isAdd()) {
-                    handleProvideAdd(providerChangeInfo);
-                } else if (providerChangeInfo.isDel()) {
-                    handleProvideDel(providerChangeInfo);
-                }
-//            } else if () {
-
+        if (!acceptTopic(topic)) {
+            return;
+        }
+        if (topic instanceof ProviderChangeTopic) {
+            ProviderChangeTopic providerChangeTopic = (ProviderChangeTopic) topic;
+            ProviderChangeTopic.ProviderChangeInfo providerChangeInfo = providerChangeTopic.getContent();
+            if (providerChangeInfo.isAdd()) {
+                handleProvideAdd(providerChangeInfo);
+            } else if (providerChangeInfo.isDel()) {
+                handleProvideDel(providerChangeInfo);
             }
+//        } else if () {
+
         }
     }
 
     private void handleProvideAdd(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {
-
+        String interfaceName = providerChangeInfo.getInterfaceName();
+        String serverIp = providerChangeInfo.getProviderIp();
+        String port = providerChangeInfo.getPort();
+        String version = providerChangeInfo.getVersion();
+        channelManager.addChannel();
     }
 
     private void handleProvideDel(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {
