@@ -53,7 +53,7 @@ public class ConsumerService implements MessageHandler {
         String serverIp = providerChangeInfo.getProviderIp();
         String port = providerChangeInfo.getPort();
         String version = providerChangeInfo.getVersion();
-        channelManager.addChannel();
+        channelManager.addChannel(interfaceName, version, serverIp, port);
     }
 
     private void handleProvideDel(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {

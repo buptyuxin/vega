@@ -3,6 +3,7 @@ package vega.manager;
 import vega.component.ClientChannelComponent;
 import vega.consumer.ConsumerService;
 import vega.message.MessageCenter;
+import vega.net.RpcRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,12 @@ public class ChannelManager {
     private ConsumerService consumerService;
 
     private ReadWriteLock lock = new ReentrantReadWriteLock();
+
+    public ChannelManager(ClientChannelComponent clientChannelComponent, MessageCenter messageCenter, ConsumerService consumerService) {
+        this.clientChannelComponent = clientChannelComponent;
+        this.messageCenter = messageCenter;
+        this.consumerService = consumerService;
+    }
 
     /**
      * interfaceName:version -> serverIp:port
@@ -43,5 +50,9 @@ public class ChannelManager {
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    public void sendReq(RpcRequest rpcRequest) {
+
     }
 }
