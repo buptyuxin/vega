@@ -1,5 +1,6 @@
 package vega.consumer;
 
+import vega.component.ClientChannelComponent;
 import vega.component.ZkComponent;
 import vega.manager.ChannelManager;
 import vega.manager.ZkConsumerManager;
@@ -8,6 +9,7 @@ import vega.message.MessageHandler;
 import vega.message.topic.ConsumerTopic;
 import vega.message.topic.ProviderChangeTopic;
 import vega.message.topic.Topic;
+import vega.net.RpcRequest;
 
 /**
  * Created by yanmo.yx on 2016/8/10.
@@ -27,7 +29,9 @@ public class ConsumerService implements MessageHandler {
         zkConsumerManager = new ZkConsumerManager(zkComponent, messageCenter, this);
         zkConsumerManager.init();
 
-        channelManager = new ChannelManager();
+        ClientChannelComponent clientChannelComponent = new ClientChannelComponent();
+
+        channelManager = new ChannelManager(clientChannelComponent, messageCenter, this);
     }
 
     @Override
@@ -48,6 +52,10 @@ public class ConsumerService implements MessageHandler {
         }
     }
 
+    public void sendReq(RpcRequest rpcRequest) {
+        channelManager.sendReq(rpcRequest);
+    }
+
     private void handleProvideAdd(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {
         String interfaceName = providerChangeInfo.getInterfaceName();
         String serverIp = providerChangeInfo.getProviderIp();
@@ -57,7 +65,11 @@ public class ConsumerService implements MessageHandler {
     }
 
     private void handleProvideDel(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {
-
+        String interfaceName = providerChangeInfo.getInterfaceName();
+        String serverIp = providerChangeInfo.getProviderIp();
+        String port = providerChangeInfo.getPort();
+        String version = providerChangeInfo.getVersion();
+        channelManager.delChannel(interfaceName, version, serverIp, port);
     }
 
     private boolean acceptTopic(Topic topic) {

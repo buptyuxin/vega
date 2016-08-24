@@ -10,6 +10,7 @@ public class RpcRequest implements Serializable {
     private static final long serialVersionUID = -4677033288339109317L;
 
     private Integer msgId;
+    private String interfaceName;
     private String version;
     private String methodMD5; // methodName + args MD5
     private Serializable[] args;
@@ -45,6 +46,14 @@ public class RpcRequest implements Serializable {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
     }
 
     public Integer getMsgId() {

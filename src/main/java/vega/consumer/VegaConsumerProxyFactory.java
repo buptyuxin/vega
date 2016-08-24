@@ -1,13 +1,10 @@
 package vega.consumer;
 
 import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
-import vega.component.RpcMethodInvokerComponent;
 import vega.proxy.cglib.RpcInterceptor;
-
-import java.lang.reflect.Method;
+import vega.proxy.cglib.RpcInvoker;
 
 /**
  * Created by yanmo.yx on 2016/7/11.
@@ -55,12 +52,12 @@ public class VegaConsumerProxyFactory {
      */
     public Object proxy(Class clazz, String version, long timeout) {
 
-        RpcMethodInvokerComponent rpcMethodInvokerComponent = new RpcMethodInvokerComponent(version, timeout);
+        RpcInvoker rpcInvoker = new RpcInvoker(consumerService, clazz.getName(), version, timeout);
 
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setCallbacks(new Callback[] {
-                new RpcInterceptor(rpcMethodInvokerComponent), NoOp.INSTANCE
+                new RpcInterceptor(rpcInvoker), NoOp.INSTANCE
         });
         enhancer.setCallbackFilter(method -> 0);
         return enhancer.create();

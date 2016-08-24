@@ -1,7 +1,8 @@
-package vega.component;
+package vega.proxy.cglib;
 
-import vega.common.MD5;
 import org.apache.commons.lang3.StringUtils;
+import vega.common.MD5;
+import vega.consumer.ConsumerService;
 import vega.net.RpcRequest;
 
 import java.io.Serializable;
@@ -10,18 +11,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by yanmo.yx on 2016/7/19.
+ * Created by yanmo.yx on 2016/8/24.
  */
-public class RpcMethodInvokerComponent implements Component{
+public class RpcInvoker {
 
     private static final String SUB_DELIMITER = "+";
 
+    private ConsumerService consumerService;
+    private String interfaceName;
     private String version;
     private long timeout = 3000L; // 默认3s
 
     private Map<Method, String> methodMD5Maps = new HashMap<>();
 
-    public RpcMethodInvokerComponent(String version, long timeout) {
+    public RpcInvoker(ConsumerService consumerService, String interfaceName, String version, long timeout) {
+        this.consumerService = consumerService;
+        this.interfaceName = interfaceName;
         this.version = version;
         this.timeout = timeout;
     }
@@ -29,6 +34,7 @@ public class RpcMethodInvokerComponent implements Component{
     public Object invoke(Method method, Object[] objects) {
 
         RpcRequest rpcRequest = new RpcRequest();
+        rpcRequest.setInterfaceName(interfaceName);
         rpcRequest.setVersion(version);
         rpcRequest.setTimeout(timeout);
         rpcRequest.setArgs(convert2Serializable(objects));
@@ -40,6 +46,8 @@ public class RpcMethodInvokerComponent implements Component{
         }
 
         rpcRequest.setMethodMD5(md5);
+
+        consumerService.sendReq(rpcRequest);
 
         return null;
 
@@ -76,15 +84,5 @@ public class RpcMethodInvokerComponent implements Component{
         }
 
         return res;
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void shutdown() {
-
     }
 }

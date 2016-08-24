@@ -2,7 +2,6 @@ package vega.proxy.cglib;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import vega.component.RpcMethodInvokerComponent;
 
 import java.lang.reflect.Method;
 
@@ -11,15 +10,15 @@ import java.lang.reflect.Method;
  */
 public class RpcInterceptor implements MethodInterceptor {
 
-    private RpcMethodInvokerComponent rpcMethodInvokerComponent;
+    private RpcInvoker rpcInvoker;
 
-    public RpcInterceptor(RpcMethodInvokerComponent rpcMethodInvokerComponent) {
-        this.rpcMethodInvokerComponent = rpcMethodInvokerComponent;
+    public RpcInterceptor(RpcInvoker rpcInvoker) {
+        this.rpcInvoker = rpcInvoker;
     }
 
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
 
-        return rpcMethodInvokerComponent.invoke(method, objects);
+        return rpcInvoker.invoke(method, objects);
     }
 }

@@ -6,6 +6,7 @@ import vega.message.MessageCenter;
 import vega.net.RpcRequest;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,12 +22,14 @@ public class ChannelManager {
     private MessageCenter messageCenter;
     private ConsumerService consumerService;
 
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
-
     public ChannelManager(ClientChannelComponent clientChannelComponent, MessageCenter messageCenter, ConsumerService consumerService) {
         this.clientChannelComponent = clientChannelComponent;
         this.messageCenter = messageCenter;
         this.consumerService = consumerService;
+    }
+
+    public void init() {
+        clientChannelComponent.init();
     }
 
     /**
@@ -35,24 +38,15 @@ public class ChannelManager {
     private Map<String, List<String>> interfaceMap = new ConcurrentHashMap<>();
 
     public void addChannel(String interfaceName, String version, String serverIp, String port) {
+        clientChannelComponent.addChannel(interfaceName, version, serverIp, Integer.valueOf(port));
+    }
 
-        lock.writeLock().lock();
-        try {
-            String key = interfaceName + ":" + version;
-            List<String> servers = interfaceMap.get(key);
-            if (servers == null) {
-                servers = new ArrayList<>();
-            }
-            servers.add(serverIp + ":" + port);
-
-            interfaceMap.put(key, servers);
-            clientChannelComponent.addChannel(serverIp, Integer.valueOf(port));
-        } finally {
-            lock.writeLock().unlock();
-        }
+    public void delChannel(String interfaceName, String version, String serverIp, String port) {
+        clientChannelComponent.delChannel(interfaceName, version, serverIp, Integer.valueOf(port));
     }
 
     public void sendReq(RpcRequest rpcRequest) {
+
 
     }
 }
