@@ -1,9 +1,11 @@
 package vega.proxy.cglib;
 
+import net.sf.cglib.proxy.MethodProxy;
 import org.apache.commons.lang3.StringUtils;
 import vega.common.MD5;
 import vega.consumer.ConsumerService;
 import vega.net.RpcRequest;
+import vega.net.RpcResponse;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -31,7 +33,7 @@ public class RpcInvoker {
         this.timeout = timeout;
     }
 
-    public Object invoke(Method method, Object[] objects) {
+    public Object invoke(Method method, Object[] objects) throws Throwable {
 
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setInterfaceName(interfaceName);
@@ -47,10 +49,14 @@ public class RpcInvoker {
 
         rpcRequest.setMethodMD5(md5);
 
-        consumerService.sendReq(rpcRequest);
+        RpcResponse rpcResponse = consumerService.sendReq(rpcRequest);
 
-        return null;
+        Throwable e = rpcResponse.getE();
+        if (e != null) {
+            throw e;
+        }
 
+        return rpcResponse.getRes();
     }
 
     private String calcMethodMD5(Method method) {

@@ -10,6 +10,7 @@ import vega.message.topic.ConsumerTopic;
 import vega.message.topic.ProviderChangeTopic;
 import vega.message.topic.Topic;
 import vega.net.RpcRequest;
+import vega.net.RpcResponse;
 
 /**
  * Created by yanmo.yx on 2016/8/10.
@@ -52,8 +53,8 @@ public class ConsumerService implements MessageHandler {
         }
     }
 
-    public void sendReq(RpcRequest rpcRequest) {
-        channelManager.sendReq(rpcRequest);
+    public RpcResponse sendReq(RpcRequest rpcRequest) {
+        return channelManager.sendReq(rpcRequest);
     }
 
     private void handleProvideAdd(ProviderChangeTopic.ProviderChangeInfo providerChangeInfo) {

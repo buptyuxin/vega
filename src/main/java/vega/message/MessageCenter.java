@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import vega.message.topic.Topic;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.StampedLock;
@@ -16,22 +17,24 @@ import java.util.concurrent.locks.StampedLock;
  */
 public class MessageCenter {
 
-    private ConcurrentMap<Topic, List<MessageHandler>> relations = Maps.newConcurrentMap();
+    private Map<Topic, List<MessageHandler>> relations = Maps.newHashMap();
     /**
-     * http://my.oschina.net/hosee/blog/615927
+     * {@see http://my.oschina.net/hosee/blog/615927}
      */
     private StampedLock lock = new StampedLock();
 
     public void fire(Topic topic) {
-        long stamp = lock.tryOptimisticRead();
-        if (!lock.validate(stamp)) {
+        long stamp = lock.tryOptimisticRead();  // 乐观锁
+        List<MessageHandler> lists = Optional.ofNullable(relations.get(topic)).orElse(Lists.newArrayList());
+        if (!lock.validate(stamp)) {    // 有写操作，所以上读锁
             try {
                 lock.readLock();
-                Optional.ofNullable(relations.get(topic)).ifPresent(handlers -> handlers.stream().forEach(handler -> handler.handle(topic)));
+                lists = Optional.ofNullable(relations.get(topic)).orElse(Lists.newArrayList());
             } finally {
                 lock.unlockRead(stamp);
             }
         }
+        lists.forEach(handler -> handler.handle(topic));
     }
 
     public void register(Topic topic, MessageHandler messageHandler) {

@@ -56,10 +56,7 @@ public class VegaConsumerProxyFactory {
 
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
-        enhancer.setCallbacks(new Callback[] {
-                new RpcInterceptor(rpcInvoker), NoOp.INSTANCE
-        });
-        enhancer.setCallbackFilter(method -> 0);
+        enhancer.setCallback(new RpcInterceptor(rpcInvoker));
         return enhancer.create();
     }
 }
