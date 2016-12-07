@@ -1,8 +1,6 @@
 package vega.consumer;
 
-import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.NoOp;
 import vega.proxy.cglib.RpcInterceptor;
 import vega.proxy.cglib.RpcInvoker;
 
@@ -53,7 +51,6 @@ public class VegaConsumerProxyFactory {
     public Object proxy(Class clazz, String version, long timeout) {
 
         RpcInvoker rpcInvoker = new RpcInvoker(consumerService, clazz.getName(), version, timeout);
-
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setCallback(new RpcInterceptor(rpcInvoker));

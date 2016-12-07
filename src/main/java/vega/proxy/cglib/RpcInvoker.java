@@ -1,6 +1,5 @@
 package vega.proxy.cglib;
 
-import net.sf.cglib.proxy.MethodProxy;
 import org.apache.commons.lang3.StringUtils;
 import vega.common.MD5;
 import vega.consumer.ConsumerService;
