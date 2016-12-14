@@ -1,8 +1,7 @@
 package vega.spring;
 
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import vega.provider.VegaProviderProxyFactory;
+import vega.core.provider.VegaProviderProxyFactory;
 
 /**
  * Created by yanmo.yx on 2016/8/31.

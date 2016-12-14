@@ -2,7 +2,7 @@ package vega.spring;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import vega.consumer.VegaConsumerProxyFactory;
+import vega.core.consumer.VegaConsumerProxyFactory;
 
 /**
  * Created by yanmo.yx on 2016/7/11.
