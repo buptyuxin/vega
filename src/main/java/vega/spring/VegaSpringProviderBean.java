@@ -11,6 +11,7 @@ public class VegaSpringProviderBean implements InitializingBean {
     private Class<?> clazz;
     private String version;
     private Class<?> targetInterface;
+    private Object target;
 
     private VegaProviderProxyFactory vegaProviderProxyFactory;
 

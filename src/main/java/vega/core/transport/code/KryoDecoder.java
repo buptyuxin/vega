@@ -1,10 +1,11 @@
-package vega.core.net.code;
+package vega.core.transport.code;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import vega.core.net.RpcResponse;
-import vega.core.net.RpcWrapper;
+import vega.core.transport.RpcResponse;
+import vega.core.transport.RpcWrapper;
 import vega.core.serialization.kryo.KryoPool;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +36,7 @@ public class KryoDecoder extends LengthFieldBasedFrameDecoder {
             return null;
         }
         try {
-            RpcResponse rpcResponse = (RpcResponse) kryoPool.decode(frame);
+            RpcResponse rpcResponse = (RpcResponse) kryoPool.decode(new ByteBufInputStream(frame));
             RpcWrapper rpcWrapper = messageMap.get(rpcResponse.getMsgId());
             if (rpcWrapper == null) {
                 // TODO fix

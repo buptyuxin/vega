@@ -18,7 +18,7 @@ public class MessageCenter {
 
     private Map<Topic, List<MessageHandler>> relations = Maps.newHashMap();
     /**
-     * {@see http://my.oschina.net/hosee/blog/615927}
+     * {@see http://my.oschina.transport/hosee/blog/615927}
      */
     private StampedLock lock = new StampedLock();
 

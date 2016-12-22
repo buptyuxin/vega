@@ -2,9 +2,9 @@ package vega.core.proxy.cglib;
 
 import org.apache.commons.lang3.StringUtils;
 import vega.core.consumer.ConsumerService;
-import vega.core.net.RpcProtocolUtil;
-import vega.core.net.RpcRequest;
-import vega.core.net.RpcResponse;
+import vega.core.transport.RpcProtocolUtil;
+import vega.core.transport.RpcRequest;
+import vega.core.transport.RpcResponse;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

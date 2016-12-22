@@ -9,8 +9,8 @@ import vega.core.message.MessageHandler;
 import vega.core.message.topic.ConsumerTopic;
 import vega.core.message.topic.ProviderChangeTopic;
 import vega.core.message.topic.Topic;
-import vega.core.net.RpcRequest;
-import vega.core.net.RpcResponse;
+import vega.core.transport.RpcRequest;
+import vega.core.transport.RpcResponse;
 
 /**
  * Created by yanmo.yx on 2016/8/10.
@@ -23,7 +23,7 @@ public class ConsumerService implements MessageHandler {
     private ChannelManager channelManager;
 
     public void init() {
-        ZkComponent zkComponent = new ZkComponent();
+        ZkComponent zkComponent = ZkComponent.singleton();
 
         messageCenter = new MessageCenter();
 

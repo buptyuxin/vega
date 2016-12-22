@@ -1,4 +1,4 @@
-package vega.core.net;
+package vega.core.transport;
 
 import vega.common.MD5;
 import vega.config.ConfigUtil;

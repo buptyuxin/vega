@@ -1,17 +1,18 @@
 package vega.core.component;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.MessageToByteEncoder;
-import vega.core.net.RpcRequest;
-import vega.core.net.RpcResponse;
-import vega.core.net.RpcWrapper;
-import vega.core.net.code.KryoDecoder;
+import vega.core.transport.RpcRequest;
+import vega.core.transport.RpcResponse;
+import vega.core.transport.RpcWrapper;
+import vega.core.transport.code.KryoCoder;
+import vega.core.transport.code.KryoDecoder;
 import vega.core.serialization.kryo.KryoPool;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,8 +28,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by yanmo.yx on 2016/8/10.
  */
 public class ClientChannelComponent implements Component {
-
-    private static final byte[] LENGTH_PLACEHOLDER = new byte[4];
 
     /**
      * serverIp:port -> ChannelWrapper
@@ -53,18 +52,7 @@ public class ClientChannelComponent implements Component {
         bootstrap.group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel socketChannel) throws Exception {
-                socketChannel.pipeline().addLast(new KryoDecoder(kryoPool, messageMap)).addLast(new MessageToByteEncoder<RpcRequest>() {
-                    @Override
-                    protected void encode(ChannelHandlerContext ctx, RpcRequest msg, ByteBuf out) throws Exception {
-                        int startIdx = out.writerIndex();
-                        ByteBufOutputStream bout = new ByteBufOutputStream(out);
-                        // 占位
-                        bout.write(LENGTH_PLACEHOLDER);
-                        kryoPool.encode(bout, msg);
-                        int endIdx = out.writerIndex();
-                        out.setInt(startIdx, endIdx - startIdx - 4);
-                    }
-                });
+                socketChannel.pipeline().addLast(new KryoDecoder(kryoPool, messageMap)).addLast(new KryoCoder(kryoPool));
             }
         });
     }

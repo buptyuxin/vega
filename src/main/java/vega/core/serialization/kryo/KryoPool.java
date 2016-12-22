@@ -1,9 +1,7 @@
 package vega.core.serialization.kryo;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -37,9 +35,9 @@ public class KryoPool {
         kryoSerialization.serialize(out, message);
     }
 
-    public Object decode(final ByteBuf in) throws IOException {
+    public Object decode(final InputStream in) throws IOException {
         KryoSerialization kryoSerialization = new KryoSerialization(kryoFactory);
-        return kryoSerialization.deserialize(new ByteBufInputStream(in));
+        return kryoSerialization.deserialize(in);
     }
 
     public int getMaxTotal() {

@@ -27,10 +27,10 @@ public class VegaProviderProxyFactory {
 
     public Object proxy(Class clazz, String version) {
 
-        RpcInvoker rpcInvoker = new RpcInvoker(consumerService, clazz.getName(), version, timeout);
+//        RpcInvoker rpcInvoker = new RpcInvoker(consumerService, clazz.getName(), version, timeout);
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
-        enhancer.setCallback(new RpcInterceptor(rpcInvoker));
+//        enhancer.setCallback(new RpcInterceptor(rpcInvoker));
         return enhancer.create();
     }
 
