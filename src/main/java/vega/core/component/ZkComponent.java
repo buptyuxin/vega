@@ -87,6 +87,7 @@ public class ZkComponent implements Component{
     }
 
     public static void main(String[] args) {
+//        1.
 //        CuratorFramework zkClient = CuratorFrameworkFactory.newClient("127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183", new ExponentialBackoffRetry(1000, 3));
 //        zkClient.start();
 //
@@ -99,6 +100,7 @@ public class ZkComponent implements Component{
 //            return;
 //        });
 
+//        2.
 //        BigDecimal customDutyRate = new BigDecimal("15");
 //        BigDecimal exciseDutyRate = new BigDecimal("10");
 //        BigDecimal vatRate = new BigDecimal("5");
@@ -121,6 +123,7 @@ public class ZkComponent implements Component{
 //        System.out.println(comprehensiveTaxRate.setScale(3, BigDecimal.ROUND_HALF_UP).stripTrailingZeros().toPlainString());
 //        System.out.println((long) ((c + v + c * v + (e + e * c + e * v + e * c * v) / (1 - e)) * 1000 * d)/1000.00);
 
+//        3.
 //        BigDecimal tf = BigDecimal.valueOf(100);
 //
 //        BigDecimal dd = BigDecimal.valueOf(20).divide(new BigDecimal("100"));
@@ -141,6 +144,7 @@ public class ZkComponent implements Component{
 //        long cctf = (long) (ttf / ((c + v + c * v + (e + e * c + e * v + e * v * c) / (1 - e)) * d + 1));
 //        System.out.println(cctf);
 
+//        4.
         BigDecimal bd = new BigDecimal("10.4");
         BigDecimal bd1 = BigDecimal.valueOf(4);
         System.out.println(bd.divide(bd1, 0 , BigDecimal.ROUND_HALF_UP).stripTrailingZeros().toPlainString());
