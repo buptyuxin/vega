@@ -1,7 +1,5 @@
 package vega.config;
 
-import com.google.common.collect.Lists;
-import io.netty.channel.ChannelHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -11,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Properties;
 
 /**
