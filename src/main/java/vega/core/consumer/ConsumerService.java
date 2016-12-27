@@ -15,7 +15,7 @@ import vega.core.transport.RpcResponse;
 /**
  * Created by yanmo.yx on 2016/8/10.
  */
-public class ConsumerService implements MessageHandler {
+public class ConsumerService implements MessageHandler<ConsumerTopic<ProviderChangeTopic.ProviderChangeInfo>> {
 
     private MessageCenter messageCenter;
 
@@ -37,20 +37,14 @@ public class ConsumerService implements MessageHandler {
     }
 
     @Override
-    public void handle(Topic<?> topic) {
-        if (!acceptTopic(topic)) {
-            return;
-        }
+    public void handle(ConsumerTopic<ProviderChangeTopic.ProviderChangeInfo> topic) {
         if (topic instanceof ProviderChangeTopic) {
-            ProviderChangeTopic providerChangeTopic = (ProviderChangeTopic) topic;
-            ProviderChangeTopic.ProviderChangeInfo providerChangeInfo = providerChangeTopic.getContent();
+            ProviderChangeTopic.ProviderChangeInfo providerChangeInfo = topic.getContent();
             if (providerChangeInfo.isAdd()) {
                 handleProvideAdd(providerChangeInfo);
             } else if (providerChangeInfo.isDel()) {
                 handleProvideDel(providerChangeInfo);
             }
-//        } else if () {
-
         }
     }
 
@@ -72,9 +66,5 @@ public class ConsumerService implements MessageHandler {
         String port = providerChangeInfo.getPort();
         String version = providerChangeInfo.getVersion();
         channelManager.delChannel(interfaceName, version, serverIp, port);
-    }
-
-    private boolean acceptTopic(Topic topic) {
-        return ConsumerTopic.class.isAssignableFrom(topic.getClass());
     }
 }

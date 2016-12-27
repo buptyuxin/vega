@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by yanmo.yx on 2016/8/24.
  */
 @Deprecated
-public abstract class AbstractMessageHandler<T> implements MessageHandler {
+public abstract class AbstractMessageHandler<U, T extends Topic<U>> implements MessageHandler<T> {
 
     /**
      * 消息处理子类 -> 对应的topic类
@@ -20,7 +20,7 @@ public abstract class AbstractMessageHandler<T> implements MessageHandler {
     private Map<Class, Class> handler2TopicMap = new HashMap<>();
 
     @Override
-    public void handle(Topic<?> topic) {
+    public void handle(T topic) {
         Class<?> clazz = getClass(); //获取实际运行的类的 Class
         Class topicClass = handler2TopicMap.get(clazz);
         if (topicClass != null && topicClass == topic.getClass()) {

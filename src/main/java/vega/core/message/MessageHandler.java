@@ -5,7 +5,7 @@ import vega.core.message.topic.Topic;
 /**
  * Created by yanmo.yx on 2016/8/9.
  */
-public interface MessageHandler {
+public interface MessageHandler<T extends Topic> {
 
-    void handle(Topic<?> topic);
+    void handle(T topic);
 }
